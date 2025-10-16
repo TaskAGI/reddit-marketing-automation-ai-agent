@@ -8,6 +8,9 @@ This AI agent automates Reddit marketing for lead generation by tracking industr
 
 Built on [TaskAGI.net](https://taskagi.net), this workflow combines RSS monitoring, AI-powered content generation, and intelligent filtering to create authentic Reddit engagement at scale.
 
+## Deployment
+Use our 1-click deploy feature on TaskAGI to get started in minutes. Visit [Reddit automation AI agent](https://taskagi.net/agent/reddit-marketing-ai-agent)
+
 ## Key Features
 
 - **Automated Keyword Monitoring** - Tracks Reddit mentions via RSS feeds (F5Bot integration)
