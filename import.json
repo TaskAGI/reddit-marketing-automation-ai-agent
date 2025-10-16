@@ -1,0 +1,384 @@
+{
+  "slug": "reddit-marketing-ai-agent-redditsaas-marketing",
+  "user_id": 1,
+  "name": "Reddit Marketing AI Agent (Reddit/SaaS marketing)",
+  "description": "Use this AI agent to keep track of industries, keywords, brands and competitors on Reddit and automatically engage with Redditors to promote your brand on autopilot.",
+  "hero_tagline": null,
+  "hero_image_url": null,
+  "features_main_title": null,
+  "features_list": [],
+  "how_it_works_steps": [],
+  "demo_section_type": null,
+  "faq_data": [],
+  "testimonials_data": [],
+  "icon_url": "https://www.google.com/s2/favicons?domain=rss.com&sz=32",
+  "category": null,
+  "tags": [],
+  "workflow_definition": {
+    "nodes": [
+      {
+        "id": "1",
+        "name": "RSS Feed Trigger",
+        "type": "rss",
+        "integration_instance_id": null,
+        "operation": "pollNewItems",
+        "config": {
+          "feed_url": "https://f5bot.com/alert-rss-feed?a=10193&h=8cf23762",
+          "item_identifier": "link",
+          "max_items_per_trigger": "1",
+          "integration_instance_id": null
+        },
+        "position_x": 1160,
+        "position_y": 530
+      },
+      {
+        "id": "2",
+        "name": "If Condition",
+        "type": "core",
+        "integration_instance_id": null,
+        "operation": "if_condition",
+        "config": {
+          "conditions": [
+            {
+              "dataType": "string",
+              "value1": "[[nodes.1008.found]]",
+              "operator": "equals",
+              "value2": "true"
+            }
+          ],
+          "combine": "OR",
+          "actions": {
+            "onTrue": "next",
+            "onFalse": "next"
+          }
+        },
+        "position_x": 1380,
+        "position_y": 970
+      },
+      {
+        "id": "3",
+        "name": "No Operation",
+        "type": "core",
+        "integration_instance_id": null,
+        "operation": "no_operation",
+        "config": {
+          "stopMessage": "we already posted a reply in this thread!",
+          "includeInputData": true,
+          "logLevel": "info"
+        },
+        "position_x": 1230,
+        "position_y": 1150
+      },
+      {
+        "id": "4",
+        "name": "Generate Text (Claude)",
+        "type": "anthropic",
+        "integration_instance_id": null,
+        "operation": "createMessage",
+        "config": {
+          "prompt": "You're a Reddit user who works on TaskAGI, an AI agent building and automation platform. One of our agents automates marketing on Reddit by tracking industries, keywords, brands and competitors, then automatically engaging with Redditors to promote brands on autopilot. This agent automates marketing for SaaS, app and ecommerce businesses. they can customise the workflow to their needs with other integrations and by changing the workflow.\n\nWrite authentic Reddit comments that sound like real people wrote them quickly.\n\nStyle requirements:\n- Natural Reddit writing style with occasional typos\n- Write like you're in a hurry and don't have much time\n- Short, conversational, and helpful (1-3 sentences usually)\n- Answer the question or engage with the topic directly\n- Use Reddit slang/abbreviations when natural (tbh, ngl, fr, etc.)\n- Occasional lowercase or typos for authenticity\n- NEVER use hyphens, dashes, or em dashes\n- Respond short with just a few sentences when it makes sense\n\nProduct mention rules:\n- Only mention TaskAGI if genuinely relevant to marketing automation needs\n- If you mention TaskAGI, briefly note you work on it\n- Our website is TaskAGI.net but don't hyperlink\n- Lead with helping first, never be promotional\n- Present TaskAGI as one option among others\n\n\nPost data: [[nodes.998.events.0.title]] [[nodes.998.events.0.description]] [[nodes.1002.post.text]] [[nodes.1002.comments]]\n\nIf the post isn't about marketing automation or related topics, just engage helpfully with the actual topic without mentioning TaskAGI.\n\nIf everything sounds completely irrelevant to marketing automation, return a single word \"skip\"\n\nOutput only the Reddit comment text, nothing else.",
+          "model": "claude-sonnet-4-20250514",
+          "temperature": "0.7",
+          "max_tokens": "1000",
+          "system_prompt": "You are a Reddit user who engages authentically in discussions and helps people with their questions. You are knowledgeable about your field and associated with a relevant product/service.\n\nCore behavior:\n- Write authentic Reddit comments that sound natural and conversational\n- Be helpful first, promotional never\n- Keep responses short and direct\n- Only mention your product/service when genuinely relevant to the user's specific question or need\n- Always lead with value by answering their question first\n- Present your solution as one option among others when giving recommendations\n- Be transparent about your association at the end of your comment\n- Don't mention all features, just the most relevant ones\n- Avoid marketing language, hyphens, dashes, or em dashes\n- If the post isn't related to your domain, engage helpfully without mentioning your product\n- Don't sound like a people pleasing yes-man or overly promotional\n\nResponse format:\n- Output only the Reddit comment text\n- No explanations, headers, or meta-commentary\n- The comment should be ready to post directly via Reddit API\n\nWhen you receive post data, analyze the context and construct an appropriate Reddit comment following these guidelines.",
+          "integration_instance_id": null
+        },
+        "position_x": 1580,
+        "position_y": 1150
+      },
+      {
+        "id": "5",
+        "name": "Read Post with Comments",
+        "type": "reddit",
+        "integration_instance_id": null,
+        "operation": "readPostWithComments",
+        "config": {
+          "post_url": "[[nodes.998.events.0.link]]",
+          "comment_limit": "50",
+          "integration_instance_id": null
+        },
+        "position_x": 1380,
+        "position_y": 710
+      },
+      {
+        "id": "6",
+        "name": "Append Row",
+        "type": "googlesheets",
+        "integration_instance_id": null,
+        "operation": "appendRowFromUrl",
+        "config": {
+          "sheet_url": "https://docs.google.com/spreadsheets/d/15NxkawqN0uQfLamcI6CtSfnTB1JYPHynaLHtstZ0_uU/edit?usp=sharing",
+          "rowData": "[\"[[nodes.1002.post.permalink]]\"]",
+          "integration_instance_id": null,
+          "row_data": "[\"[[nodes.1002.post.permalink]]\"]"
+        },
+        "position_x": 1730,
+        "position_y": 1590
+      },
+      {
+        "id": "7",
+        "name": "If Condition",
+        "type": "core",
+        "integration_instance_id": null,
+        "operation": "if_condition",
+        "config": {
+          "conditions": [
+            {
+              "dataType": "string",
+              "value1": "[[nodes.998.events.0.title]]",
+              "operator": "contains",
+              "value2": "app marketing"
+            },
+            {
+              "dataType": "string",
+              "value1": "[[nodes.998.events.0.title]]",
+              "operator": "contains",
+              "value2": "b2b marketing"
+            },
+            {
+              "dataType": "string",
+              "value1": "[[nodes.998.events.0.title]]",
+              "operator": "contains",
+              "value2": "reddit marketing"
+            },
+            {
+              "dataType": "string",
+              "value1": "[[nodes.998.events.0.title]]",
+              "operator": "contains",
+              "value2": "saas marketing"
+            },
+            {
+              "dataType": "string",
+              "value1": "[[nodes.998.events.0.title]]",
+              "operator": "contains",
+              "value2": "software marketing"
+            },
+            {
+              "dataType": "string",
+              "value1": "[[nodes.998.events.0.title]]",
+              "operator": "contains",
+              "value2": "ai agent"
+            }
+          ],
+          "combine": "OR",
+          "actions": {
+            "onTrue": "next",
+            "onFalse": "next"
+          }
+        },
+        "position_x": 1420,
+        "position_y": 540
+      },
+      {
+        "id": "8",
+        "name": "No Operation",
+        "type": "core",
+        "integration_instance_id": null,
+        "operation": "no_operation",
+        "config": {
+          "stopMessage": "No matching keyword found",
+          "includeInputData": true,
+          "logLevel": "info"
+        },
+        "position_x": 1640,
+        "position_y": 710
+      },
+      {
+        "id": "9",
+        "name": "Create Comment",
+        "type": "reddit",
+        "integration_instance_id": null,
+        "operation": "createComment",
+        "config": {
+          "parent_id": "[[nodes.998.events.0.link]]",
+          "text": "[[nodes.1001.content]]",
+          "integration_instance_id": null
+        },
+        "position_x": 1730,
+        "position_y": 1450
+      },
+      {
+        "id": "10",
+        "name": "Schedule Interval Trigger",
+        "type": "trigger",
+        "integration_instance_id": null,
+        "operation": "schedule_interval",
+        "config": {
+          "interval_minutes": "1",
+          "next_run_at": "2025-10-16 12:48:02",
+          "last_run_at": "2025-10-16 12:47:02"
+        },
+        "position_x": 880,
+        "position_y": 500
+      },
+      {
+        "id": "11",
+        "name": "Search in Sheet",
+        "type": "googlesheets",
+        "integration_instance_id": null,
+        "operation": "searchInSheet",
+        "config": {
+          "sheet_url": "https://docs.google.com/spreadsheets/d/15NxkawqN0uQfLamcI6CtSfnTB1JYPHynaLHtstZ0_uU/edit?usp=sharing",
+          "search_value": "[[nodes.1002.post.permalink]]",
+          "search_range": null,
+          "exact_match": false,
+          "integration_instance_id": null
+        },
+        "position_x": 1380,
+        "position_y": 840
+      },
+      {
+        "id": "12",
+        "name": "If Condition",
+        "type": "core",
+        "integration_instance_id": null,
+        "operation": "if_condition",
+        "config": {
+          "conditions": [
+            {
+              "dataType": "string",
+              "value1": "[[nodes.1001.content]]",
+              "operator": "contains",
+              "value2": "skip"
+            }
+          ],
+          "combine": "AND",
+          "actions": {
+            "onTrue": "next",
+            "onFalse": "next"
+          }
+        },
+        "position_x": 1580,
+        "position_y": 1280
+      },
+      {
+        "id": "13",
+        "name": "No Operation",
+        "type": "core",
+        "integration_instance_id": null,
+        "operation": "no_operation",
+        "config": {
+          "stopMessage": "Skipped because irrelevant content",
+          "includeInputData": true,
+          "logLevel": "info"
+        },
+        "position_x": 1410,
+        "position_y": 1440
+      }
+    ],
+    "connections": [
+      {
+        "source_node_id": "10",
+        "source_output": "0",
+        "target_node_id": "1",
+        "target_input": null
+      },
+      {
+        "source_node_id": "1",
+        "source_output": "items",
+        "target_node_id": "7",
+        "target_input": null
+      },
+      {
+        "source_node_id": "7",
+        "source_output": "true_path",
+        "target_node_id": "5",
+        "target_input": null
+      },
+      {
+        "source_node_id": "7",
+        "source_output": "false_path",
+        "target_node_id": "8",
+        "target_input": null
+      },
+      {
+        "source_node_id": "5",
+        "source_output": "post",
+        "target_node_id": "11",
+        "target_input": null
+      },
+      {
+        "source_node_id": "11",
+        "source_output": "found",
+        "target_node_id": "2",
+        "target_input": null
+      },
+      {
+        "source_node_id": "2",
+        "source_output": "true_path",
+        "target_node_id": "3",
+        "target_input": null
+      },
+      {
+        "source_node_id": "2",
+        "source_output": "false_path",
+        "target_node_id": "4",
+        "target_input": null
+      },
+      {
+        "source_node_id": "4",
+        "source_output": "content",
+        "target_node_id": "12",
+        "target_input": null
+      },
+      {
+        "source_node_id": "12",
+        "source_output": "true_path",
+        "target_node_id": "13",
+        "target_input": null
+      },
+      {
+        "source_node_id": "12",
+        "source_output": "false_path",
+        "target_node_id": "9",
+        "target_input": null
+      },
+      {
+        "source_node_id": "9",
+        "source_output": "comment_id",
+        "target_node_id": "6",
+        "target_input": null
+      }
+    ]
+  },
+  "required_integrations": [
+    "rss",
+    "anthropic",
+    "reddit",
+    "googlesheets"
+  ],
+  "is_premium": false,
+  "usage_count": 0,
+  "draft": true,
+  "version": "1.0.0",
+  "setup_guide": null,
+  "_export_metadata": {
+    "exported_at": "2025-10-16T12:47:50.973947Z",
+    "exported_by": "cem",
+    "source_agent_id": 591,
+    "source_agent_name": "Reddit Marketing AI Agent (Reddit/SaaS marketing)",
+    "node_id_mapping": {
+      "998": "1",
+      "999": "2",
+      "1000": "3",
+      "1001": "4",
+      "1002": "5",
+      "1003": "6",
+      "1004": "7",
+      "1005": "8",
+      "1006": "9",
+      "1007": "10",
+      "1008": "11",
+      "1009": "12",
+      "1010": "13"
+    },
+    "total_nodes": 13,
+    "total_connections": 12,
+    "integration_types": [
+      "rss",
+      "anthropic",
+      "reddit",
+      "googlesheets"
+    ]
+  }
+}
