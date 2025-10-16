@@ -2,6 +2,9 @@
 
 AI-powered Reddit marketing automation that monitors keywords, generates authentic comments with Claude AI, and engages on autopilot. Perfect for SaaS, app, and ecommerce marketing.
 
+![reddit marketing automaiton ai agent]([http://url/to/img.png](https://taskagi.net/resources/images/agents/reddit-marketing-ai-agent.png))
+
+
 ## Overview
 
 This AI agent automates Reddit marketing for lead generation by tracking industries, keywords, brands, and competitors on Reddit, then automatically engaging with Redditors to promote your brand authentically and on autopilot.
